@@ -1,8 +1,14 @@
+var logElement = document.getElementById('log');
+var log = function (str) {
+  logElement.innerHTML += '\n' + str;
+}
+
 // wrapper for audio elements
 var Audio = function(props) {
   this.channels = []
   this.activeChannel = null;
   this.playType = this.choiseSource();
+  log('can play ' + this.playType);
   // extend from props, just in case
   for (var field in props) {
     if (props.hasOwnProperty(field)) {
@@ -26,6 +32,21 @@ Audio.prototype.choiseSource = function() {
 Audio.prototype.addChannel = function(src) {
   var newChannel = document.createElement('audio');
   newChannel.setAttribute('src', src);
+  newChannel.addEventListener('loadstart', function() {
+    log(src + ' load start');
+  });
+  newChannel.addEventListener('durationchange', function() {
+    log(src + ' duration change ' + this.duration);
+  });
+  newChannel.addEventListener('canplay', function() {
+    log(src + ' can play');
+  });
+  newChannel.addEventListener('play', function() {
+    log(src + ' start play');
+  });
+  newChannel.addEventListener('ended', function() {
+    log(src + ' ended');
+  });
   this.channels.push(newChannel);
 }
 
@@ -106,7 +127,7 @@ var InfoTable = function(audio) {
 
     table.appendChild(tr);
   }
-  document.body.appendChild(table);
+  document.body.insertBefore(table, document.getElementById('log'));
 }
 
 var audio = new Audio();
@@ -116,3 +137,4 @@ audio.addChannel('audio/3.wav');
 audio.addChannel('audio/4.wav');
 
 var table = new InfoTable(audio);
+
