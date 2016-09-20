@@ -1,10 +1,7 @@
 pages:
-  stage: deploy
   script:
   - mkdir .public
-  - cp -r ./index.html .public
-  - cp -r ./js/* .public
-  - cp -r ./audio/* .public
+  - cp -r * .public
   - mv .public public
   artifacts:
     paths:
